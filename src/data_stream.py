@@ -17,7 +17,7 @@ logger = logging.getLogger('data_stream')
 logger.setLevel(logging.DEBUG)
 
 
-def process_stream(stream, kafka_producer, target_topic):
+def process_stream(_stream, _kafka_producer, _target_topic):
     """
     """
     def pair(data):
@@ -35,13 +35,12 @@ def process_stream(stream, kafka_producer, target_topic):
 
             try:
                 logger.info(f"Sending average price {data} to kafka.")
-                kafka_producer.send(target_topic, value=data)
+                _kafka_producer.send(_target_topic, value=data)
             except KafkaError as kafka_error:
                 logger.warning(f'Failed to send average price to kafka, caused by {kafka_error}')
-        pass
 
-    stream.map(pair).reduceByKey(lambda a, b: (a[0] + b[0], a[1] + b[1])).map(
-        lambda (k, v): (k, v[0] / v[1])).foreachRDD(send_to_kafka)
+    _stream.map(pair).reduceByKey(lambda a, b: (a[0] + b[0], a[1] + b[1])).map(
+        lambda k, v: (k, v[0] / v[1])).foreachRDD(send_to_kafka)
     pass
 
 
@@ -87,7 +86,7 @@ if __name__ == '__main__':
     directKafkaStream = KafkaUtils.createDirectStream(ssc, [source_topic], {'metadata.broker.list': kafka_broker})
 
     # Extract value from directKafkaStream pair
-    stream = directKafkaStream.map(lambda  x: x[1])
+    stream = directKafkaStream.map(lambda x: x[1])
 
     # Instantiate a simple kafka producer
     kafka_producer = KafkaProducer(bootstrap_servers=kafka_broker)
