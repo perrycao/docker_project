@@ -73,7 +73,7 @@ if __name__ == '__main__':
     hbase_host = args.hbase_host
 
     # Initiate a simple kafka consumer.
-    consumer = KafkaConsumer(topic_name, bootstrap_server=kafka_broker)
+    consumer = KafkaConsumer(topic_name, bootstrap_servers=kafka_broker)
 
     # Initiate a hbase connection
     hbase_connection = happybase.Connection(hbase_host)
