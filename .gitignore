@@ -33,3 +33,5 @@
 *.app
 
 .idea
+
+/node/node_modules
