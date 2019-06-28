@@ -9,7 +9,7 @@ $(function() {
         ,margin({
             bottom: 100
         })
-        .useIteractiveGuideline(true)
+        .useInteractiveGuideline(true)
         .showLegend(true)
         .color(d3.scale.category10().range());
 
@@ -33,7 +33,7 @@ $(function() {
 
     function formatDateTick(Time) {
         var data = new Date(time);
-        console.log(data);
+        console.log(date);
         return d3.time.format(%H:%M:%S)(date);
     };
 

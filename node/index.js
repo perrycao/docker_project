@@ -5,7 +5,7 @@ var redis_port = argv['redis_port'];
 var redis_channel = argv['redis_channel'];
 
 // Setup dependency instance
-var express require('express');
+var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);

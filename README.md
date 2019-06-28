@@ -107,5 +107,8 @@ npm install d3@3.5.17
 npm install nvd3
 
 
-? -> spark-submit --jar spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar
+spark-submit --jar spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar data_stream.py analyzer average-price 127.0.0.1:9092 5
+
+python src\redis_publisher.py average-price 127.0.0.1:9092 price 127.0.0.1 6379
+node index.js --redis_host=localhost --redis_port=6379 --redis_channel=price --port=3000 
 ```
