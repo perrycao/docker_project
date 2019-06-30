@@ -21,7 +21,7 @@ def process_stream(_stream, _kafka_producer, _target_topic):
     """
     """
     def pair(data):
-        record = json.loads(data.decode('utf-8'))
+        record = json.loads(data)
         return record.get('Symbol'), (float(record.get('LastTradePrice')), 1)
 
     def send_to_kafka(rdd):
@@ -35,12 +35,12 @@ def process_stream(_stream, _kafka_producer, _target_topic):
 
             try:
                 logger.info(f"Sending average price {data} to kafka.")
-                _kafka_producer.send(_target_topic, value=data)
+                _kafka_producer.send(_target_topic, value=data.encode('utf-8'))
             except KafkaError as kafka_error:
                 logger.warning(f'Failed to send average price to kafka, caused by {kafka_error}')
 
     _stream.map(pair).reduceByKey(lambda a, b: (a[0] + b[0], a[1] + b[1])).map(
-        lambda k, v: (k, v[0] / v[1])).foreachRDD(send_to_kafka)
+        lambda x: (x[0], x[1][0] / x[1][1])).foreachRDD(send_to_kafka)
     pass
 
 
