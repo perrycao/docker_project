@@ -15,18 +15,19 @@ var redis = require('redis');
 console.log('Creating redis client.');
 var redisClient = redis.createClient(redis_port, redis_host);
 console.log('Subscribing to redis channel: %s', redis_channel);
+redisClient.subscribe(redis_channel);
 
 redisClient.on('message', function(channel, message) {
     if (channel == redis_channel) {
         console.log('message receive: %s', message);
-        io.socket.emit('data', message);
+        io.sockets.emit('data', message);
     }});
 
 // Setup webapp routing
 app.use(express.static(__dirname + '/public'));
-app.use('/query', express.static(__dirname + '/node_modules/jquery/dist'));
-app.use('/d3', express.static(__dirname + '/node_modules/d3'));
-app.use('/nvd3', express.static(__dirname + '/node_modules/nvd3/build'));
+app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
+app.use('/d3', express.static(__dirname + '/node_modules/d3/'));
+app.use('/nvd3', express.static(__dirname + '/node_modules/nvd3/build/'));
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 
 server.listen(port, function() {

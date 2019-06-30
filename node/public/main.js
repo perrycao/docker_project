@@ -4,14 +4,14 @@ $(function() {
 
     $('#chart').height($(window).height() - $(#header).height());
 
-    var chart = nv.modules.lineChart()
-        .interpolate('monotone')
-        ,margin({
-            bottom: 100
-        })
-        .useInteractiveGuideline(true)
-        .showLegend(true)
-        .color(d3.scale.category10().range());
+	var chart = nv.models.lineChart()
+		.interpolate('monotone')
+		.margin({
+			bottom: 100
+		})
+		.useInteractiveGuideline(true)
+		.showLegend(true)
+		.color(d3.scale.category10().range());
 
     chart.xAxis
         .axisLabel('Time')
@@ -20,18 +20,20 @@ $(function() {
     chart.yAxis
         .axisLabel('Price');
 
-    function loadGraph() {
-        d3.select('#chart svg')
-            .datum(data_points)
-            .transition()
-            .duration(1)
-            .call(chart);
+	nv.addGraph(loadGraph);
+
+	function loadGraph() {
+		d3.select('#chart svg')
+			.datum(data_points)
+			.transition()
+			.duration(5)
+			.call(chart)
 
         nv.utils.windowResize(chart.update);
         return chart;
     };
 
-    function formatDateTick(Time) {
+    function formatDateTick(time) {
         var data = new Date(time);
         console.log(date);
         return d3.time.format(%H:%M:%S)(date);
@@ -56,12 +58,12 @@ $(function() {
         console.log(point);
         var i = getSymbolIndex(symbol, data_points);
 
-        data_pints[i].values.push(point);
-        if (data_points[i].values.length > 100) {
-            data_points[i].values.shift();
-        };
-        loadGraph();
-    }
+		data_points[i].values.push(point);
+		if (data_points[i].values.length > 100) {
+			data_points[i].values.shift();
+		}
+		loadGraph();
+	}
 
     function getSymbolIndex(symbol, array) {
         for (var i = 0; i < array.length; i++) {
