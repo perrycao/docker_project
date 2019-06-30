@@ -87,7 +87,7 @@ docker exec -it redis redis-cli
 ```
 docker run -d -p 2181:2181 -p 2888:2888 -p 3888:3888 --name zookeeper confluent/zookeeper
 docker run -d -p 9092:9092 -e KAFKA_ADVERTISED_HOST_NAME=localhost -e KAFKA_ADVERTISED_PORT=9092 --name kafka --link zookeeper:zookeeper confluent/kafka
-docker run -d -p 6379:6379 --name redis redis:alpine
+docker run -d -p 6380:6380 --name redis redis:alpine
 
 python src/data_producer.py BTC-USD analyzer 127.0.0.1:9092
 python src/redis_publisher.py analyzer 127.0.0.1:9092 Average 127.0.0.1 6379
@@ -107,8 +107,16 @@ npm install d3@3.5.17
 npm install nvd3
 
 
-spark-submit --jar spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar data_stream.py analyzer average-price 127.0.0.1:9092 5
+spark-submit --jars spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar src\data_stream.py analyzer Average 127.0.0.1:9092 5
 
 python src\redis_publisher.py average-price 127.0.0.1:9092 price 127.0.0.1 6379
+node index.js --redis_host=localhost --redis_port=6379 --redis_channel=Average --port=3000 
+```
+
+## 2019-06-30
+```
+python src/data_producer.py BTC-USD analyzer 127.0.0.1:9092
+spark-submit --jars spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar src\data_stream.py analyzer Average 127.0.0.1:9092 5
+python src/redis_publisher.py Average 127.0.0.1:9092 price 127.0.0.1 6379
 node index.js --redis_host=localhost --redis_port=6379 --redis_channel=price --port=3000 
 ```
